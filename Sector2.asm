@@ -6,8 +6,14 @@ VideoSegment equ 0x18
 [bits 32]
 
 START:
-	mov ebp, START
-	mov esp, START
+	mov bx, DataSegment
+	mov ds, bx
+	mov es, bx
+	mov fs, bx
+	mov gs, bx
+	mov ss, bx
+	lea esp, [START]
+	
 
 	mov edi,0
 	mov esi, msg
@@ -18,7 +24,7 @@ START:
 printf:
 	push eax
 	push es
-	mov ax, VideoSegment ; ºñµð¿À
+	mov ax, VideoSegment ; ë¹„ë””ì˜¤
 	mov es, ax
 	
 printf_loop:
@@ -38,6 +44,6 @@ printf_end:
 	pop eax
 	ret
 
-msg db 'Loading',0
+msg db 'Call printf',0
 
 times 512-($-$$) db 0

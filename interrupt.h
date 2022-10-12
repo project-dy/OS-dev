@@ -4,6 +4,7 @@ void init_intdesc();
 void idt_ignore();
 void idt_timer();
 void idt_keyboard();
+unsigned char transScan(unsigned char);
 
 struct IDT
 {

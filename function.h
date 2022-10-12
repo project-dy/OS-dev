@@ -1,4 +1,8 @@
 #pragma once
 
-void kprintf(char*, int, int);
-// str : Ãâ·ÂÇÒ ½ºÆ®¸µ ÁÖ¼Ò , int : ¸î ¹øÂ° ÁÙ¿¡ Ãâ·ÂÇÒ °ÍÀÎÁö, int : ¸î ¹øÂ° Çà¿¡ Ãâ·ÂÇÒ °ÍÀÎÁö
+void kprintf(char*, int, int); // str : ì¶œë ¥í•  ìŠ¤íŠ¸ë§ ì£¼ì†Œ , int : ëª‡ ë²ˆì§¸ ì¤„ì— ì¶œë ¥í•  ê²ƒì¸ì§€, int : ëª‡ ë²ˆì§¸ í–‰ì— ì¶œë ¥í•  ê²ƒì¸ì§€
+void kprintf_line_clear(int, int);
+void kprintf_clear_all();
+
+int kstrcmp(char*, char*);
+int kstrlen(char*);

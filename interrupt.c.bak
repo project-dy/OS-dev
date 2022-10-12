@@ -1,12 +1,15 @@
+
 #include "interrupt.h"
 #include "function.h"
-#include "data.h"
 
 struct IDT inttable[3];
 struct IDTR idtr = { 256 * 8 - 1,0 };
 
 unsigned char keyt[2] = { 'A', 0 };
 unsigned char keybuf;
+
+static unsigned char keyboard[160] = { 0, };
+static unsigned short index = 0;
 
 void init_intdesc()
 {
@@ -72,10 +75,6 @@ void init_intdesc()
 		*(isr + 2) = inttable[2].type;
 		*(isr + 3) = inttable[2].offseth;
 
-		kindex = 0;
-
-		for (int i = 0; i < videomaxcol; i++)
-			keyboard[i] = 0;
 	}
 
 	// 키보드 작동
@@ -146,7 +145,7 @@ void idt_timer()
 
 	);
 
-	kprintf(keyt, videomaxline - 1, videomaxcol - 1);
+	kprintf(keyt, 7, 40);
 	keyt[0]++;
 
 	__asm__ __volatile__
@@ -184,10 +183,13 @@ void idt_keyboard()
 
 	keybuf = transScan(keybuf);
 
-	if (keybuf == BACKSPACE && kindex != 0) // 백스페이스 입력
-		keyboard[--kindex] = 0;
-	else if (keybuf != 0xFF && keybuf != BACKSPACE)
-		keyboard[kindex++] = keybuf;
+	if (keybuf == 0x08 && index != 0) // 백스페이스 입력
+		keyboard[--index] = 0;
+	else if (keybuf != 0xFF && keybuf != 0x08)
+		keyboard[index++] = keybuf;
+
+	kprintf_line_clear(8);
+	kprintf(keyboard, 8, 0);
 
 	__asm__ __volatile__
 	(
@@ -243,11 +245,11 @@ unsigned char transScan(unsigned char target)
 	case 0x15: result = 'y'; break;
 	case 0x2C: result = 'z'; break;
 	case 0x39: result = ' '; break; // 스페이스
-	case 0x0E: result = BACKSPACE; break; // 백스페이스 아스키코드 = 8
-	case 0x1C: result = ENTER; break; // Enter key
+	case 0x0E: result = 0x08; break; // 백스페이스 아스키코드 = 8
+
 	default: result = 0xFF; break;
 		// 구현안된 것은 무시한다. 구분자는 0xFF
-		return FALSE;
+
 	}
 
 	return result;
